@@ -1,0 +1,48 @@
+name: Deploy Flute App to GitHub Pages
+
+# Publishes the flute-lessons/ folder to GitHub Pages so it can be opened
+# over HTTPS (required for microphone access on iPhone/Safari and mobile Chrome).
+
+on:
+  push:
+    branches:
+      - claude/flute-lesson-feedback-app-7dcuit
+      - master
+    paths:
+      - "flute-lessons/**"
+      - ".github/workflows/deploy-flute-app.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment.
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload flute app as the site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Use the flute-lessons folder as the site root, so the app is served
+          # at the top-level Pages URL (index.html loads automatically).
+          path: "flute-lessons"
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
