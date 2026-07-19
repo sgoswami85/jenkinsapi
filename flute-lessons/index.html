@@ -192,7 +192,7 @@
     </div>
   </div>
 
-  <p class="hint">Tip: set <b>Your Sa</b> to match the base note of your bansuri (a common C flute → Sa = C4/C5). Uses your mic only — nothing is recorded or uploaded.</p>
+  <p class="hint">Tip: set <b>Your Sa</b> to match the base note of your bansuri (e.g. an E natural bansuri → Sa = E; a C flute → Sa = C). Uses your mic only — nothing is recorded or uploaded.</p>
 </div>
 
 <script>
@@ -230,7 +230,7 @@
       const opt = document.createElement("option");
       opt.value = String(midi);
       opt.textContent = name;
-      if (midi === 60) opt.selected = true; // C4
+      if (midi === 76) opt.selected = true; // E5 — default Sa for an E natural bansuri
       tonicSel.appendChild(opt);
     }
   })();
