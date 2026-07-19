@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bansuri Sur — Flute Sargam Trainer</title>
+<style>
+  :root {
+    --bg: #0f1220;
+    --panel: #191d33;
+    --panel-2: #22273f;
+    --text: #eef1ff;
+    --muted: #9aa1c4;
+    --accent: #7c8cff;
+    --green: #22c55e;
+    --green-glow: rgba(34, 197, 94, 0.55);
+    --red: #ef4444;
+    --red-glow: rgba(239, 68, 68, 0.5);
+    --amber: #f59e0b;
+    --border: #2c3252;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: radial-gradient(1200px 800px at 50% -10%, #1a2140 0%, var(--bg) 55%);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 24px 18px 64px; }
+  header { text-align: center; margin-bottom: 18px; }
+  header h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: 0.3px; }
+  header p { color: var(--muted); margin: 0; font-size: 14px; }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 16px;
+  }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+  .field { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 130px; }
+  .field label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; }
+  select, button {
+    font: inherit;
+    color: var(--text);
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+  }
+  select:focus, button:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #0d1024; font-weight: 600; }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .btn-ghost:hover { border-color: var(--accent); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Big feedback light */
+  .stage { text-align: center; padding: 8px 0 4px; }
+  .light {
+    width: 190px; height: 190px; border-radius: 50%;
+    margin: 6px auto 14px;
+    background: var(--panel-2);
+    border: 6px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 90ms linear, border-color 90ms linear, box-shadow 120ms linear;
+    position: relative;
+  }
+  .light.on-green {
+    background: radial-gradient(circle at 50% 40%, #4ade80, #16a34a);
+    border-color: #86efac;
+    box-shadow: 0 0 60px 6px var(--green-glow);
+  }
+  .light.on-red {
+    background: radial-gradient(circle at 50% 40%, #f87171, #dc2626);
+    border-color: #fca5a5;
+    box-shadow: 0 0 50px 4px var(--red-glow);
+  }
+  .light .swara { font-size: 58px; font-weight: 700; line-height: 1; }
+  .light .swara small { display: block; font-size: 15px; font-weight: 500; opacity: 0.85; margin-top: 6px; }
+
+  .target-row { font-size: 15px; color: var(--muted); margin-bottom: 6px; }
+  .target-row b { color: var(--text); font-size: 18px; }
+
+  /* Cents meter */
+  .meter { margin: 16px auto 4px; max-width: 460px; }
+  .meter-track {
+    position: relative; height: 16px; border-radius: 10px;
+    background: linear-gradient(90deg, var(--red) 0%, var(--amber) 30%, var(--green) 50%, var(--amber) 70%, var(--red) 100%);
+    opacity: 0.85;
+  }
+  .meter-center { position: absolute; left: 50%; top: -5px; width: 2px; height: 26px; background: #fff; transform: translateX(-50%); opacity: 0.8; }
+  .meter-needle {
+    position: absolute; top: -7px; width: 4px; height: 30px; border-radius: 3px;
+    background: #fff; transform: translateX(-50%);
+    left: 50%; transition: left 70ms linear;
+    box-shadow: 0 0 8px rgba(255,255,255,0.6);
+  }
+  .meter-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+  .readout { display: flex; justify-content: center; gap: 26px; margin-top: 14px; flex-wrap: wrap; }
+  .readout div { text-align: center; }
+  .readout .k { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; }
+  .readout .v { font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* Sargam strip */
+  .sargam-strip { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 4px; }
+  .swara-chip {
+    padding: 8px 12px; border-radius: 10px; background: var(--panel-2);
+    border: 1px solid var(--border); font-weight: 600; min-width: 46px; text-align: center;
+    transition: all 90ms linear; font-size: 15px;
+  }
+  .swara-chip small { display:block; font-size: 10px; color: var(--muted); font-weight: 500; }
+  .swara-chip.active { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(124,140,255,0.35); }
+  .swara-chip.hit { background: rgba(34,197,94,0.22); border-color: var(--green); }
+
+  .hint { color: var(--muted); font-size: 13px; text-align: center; margin-top: 10px; line-height: 1.5; }
+  .status-line { text-align: center; font-size: 13px; color: var(--muted); min-height: 18px; margin-top: 6px; }
+  .mode-tabs { display: flex; gap: 8px; justify-content: center; margin-bottom: 4px; }
+  .mode-tabs button { padding: 8px 14px; }
+  .mode-tabs button.active { background: var(--accent); color: #0d1024; border-color: var(--accent); font-weight: 600; }
+  .score { font-size: 13px; color: var(--muted); text-align:center; margin-top: 8px; }
+  .score b { color: var(--green); }
+  a.footer-link { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🎶 Bansuri Sur</h1>
+    <p>Play your flute — get <span style="color:var(--green)">green</span> when your Sa&nbsp;Re&nbsp;Ga&nbsp;Ma is in tune, <span style="color:var(--red)">red</span> when it's off.</p>
+  </header>
+
+  <div class="panel">
+    <div class="controls">
+      <div class="field">
+        <label for="tonic">Your Sa (base note)</label>
+        <select id="tonic"></select>
+      </div>
+      <div class="field">
+        <label for="tolerance">Tuning tolerance</label>
+        <select id="tolerance">
+          <option value="25">Strict (±25 cents)</option>
+          <option value="40" selected>Normal (±40 cents)</option>
+          <option value="60">Beginner (±60 cents)</option>
+        </select>
+      </div>
+      <div class="field" style="flex:0 0 auto; min-width:auto;">
+        <label>&nbsp;</label>
+        <button id="startBtn" class="btn-primary">▶ Start listening</button>
+      </div>
+    </div>
+    <div class="status-line" id="status">Tap “Start listening”, then allow microphone access.</div>
+  </div>
+
+  <div class="panel">
+    <div class="mode-tabs">
+      <button id="modeFree" class="active">Free play</button>
+      <button id="modeLesson">Sargam lesson (Sa→Sa)</button>
+    </div>
+
+    <div class="stage">
+      <div class="target-row" id="targetRow" style="visibility:hidden;">Target swara: <b id="targetSwara">Sa</b></div>
+      <div class="light" id="light">
+        <div class="swara" id="lightSwara">–<small id="lightHz">listening…</small></div>
+      </div>
+
+      <div class="meter">
+        <div class="meter-track">
+          <div class="meter-center"></div>
+          <div class="meter-needle" id="needle"></div>
+        </div>
+        <div class="meter-labels"><span>-50¢ flat</span><span>in tune</span><span>+50¢ sharp</span></div>
+      </div>
+
+      <div class="readout">
+        <div><div class="k">Detected note</div><div class="v" id="rNote">–</div></div>
+        <div><div class="k">Frequency</div><div class="v" id="rHz">–</div></div>
+        <div><div class="k">Off by</div><div class="v" id="rCents">–</div></div>
+      </div>
+
+      <div class="score" id="score" style="visibility:hidden;">Lesson progress: <b id="scoreNum">0</b> / 8 swaras held in tune</div>
+    </div>
+
+    <div class="sargam-strip" id="strip"></div>
+    <div class="hint" id="hint">
+      In <b>Free play</b>, hold any note — the light turns green the moment your pitch locks onto a true sargam swara.
+    </div>
+  </div>
+
+  <p class="hint">Tip: set <b>Your Sa</b> to match the base note of your bansuri (a common C flute → Sa = C4/C5). Uses your mic only — nothing is recorded or uploaded.</p>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---- Sargam definitions (Bilawal / major thaat, shuddha swaras) ----
+  // semitone offset from Sa -> swara label
+  const SWARAS = [
+    { name: "Sa",  full: "Shadja",   semi: 0  },
+    { name: "Re",  full: "Rishabh",  semi: 2  },
+    { name: "Ga",  full: "Gandhar",  semi: 4  },
+    { name: "Ma",  full: "Madhyam",  semi: 5  },
+    { name: "Pa",  full: "Pancham",  semi: 7  },
+    { name: "Dha", full: "Dhaivat",  semi: 9  },
+    { name: "Ni",  full: "Nishad",   semi: 11 },
+    { name: "Sa'", full: "Taar Sa",  semi: 12 },
+  ];
+
+  const NOTE_NAMES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+
+  // ---- DOM ----
+  const el = (id) => document.getElementById(id);
+  const tonicSel = el("tonic"), tolSel = el("tolerance"), startBtn = el("startBtn");
+  const statusEl = el("status"), light = el("light"), lightSwara = el("lightSwara"), lightHz = el("lightHz");
+  const needle = el("needle"), rNote = el("rNote"), rHz = el("rHz"), rCents = el("rCents");
+  const strip = el("strip"), targetRow = el("targetRow"), targetSwara = el("targetSwara");
+  const hint = el("hint"), modeFree = el("modeFree"), modeLesson = el("modeLesson");
+  const scoreBox = el("score"), scoreNum = el("scoreNum");
+
+  // ---- Populate tonic selector (C3..C6), default C5 for bansuri-ish range ----
+  (function fillTonics() {
+    for (let midi = 48; midi <= 84; midi++) {
+      const name = NOTE_NAMES[midi % 12] + (Math.floor(midi / 12) - 1);
+      const opt = document.createElement("option");
+      opt.value = String(midi);
+      opt.textContent = name;
+      if (midi === 60) opt.selected = true; // C4
+      tonicSel.appendChild(opt);
+    }
+  })();
+
+  // ---- Build sargam chips ----
+  const chipEls = [];
+  (function buildStrip() {
+    strip.innerHTML = "";
+    chipEls.length = 0;
+    SWARAS.forEach((s, i) => {
+      const c = document.createElement("div");
+      c.className = "swara-chip";
+      c.innerHTML = s.name + "<small>" + s.full + "</small>";
+      strip.appendChild(c);
+      chipEls.push(c);
+    });
+  })();
+
+  const midiToFreq = (m) => 440 * Math.pow(2, (m - 69) / 12);
+
+  // Given a detected frequency, find the nearest sargam swara relative to current Sa.
+  function analyzePitch(freq) {
+    const saMidi = parseInt(tonicSel.value, 10);
+    const saFreq = midiToFreq(saMidi);
+    // semitones above Sa (can be negative / >12); fold to look at our swara set across octaves
+    const semisFromSa = 12 * Math.log2(freq / saFreq);
+    // reduce to nearest swara using octave folding for matching, but keep true offset for target mode
+    let best = null;
+    // search a few octaves so a note played anywhere maps to a swara
+    for (let oct = -2; oct <= 3; oct++) {
+      for (let i = 0; i < SWARAS.length; i++) {
+        const targetSemi = SWARAS[i].semi + 12 * oct;
+        const cents = (semisFromSa - targetSemi) * 100;
+        if (best === null || Math.abs(cents) < Math.abs(best.cents)) {
+          best = { swaraIndex: i, swara: SWARAS[i], cents: cents, octave: oct };
+        }
+      }
+    }
+    // also nearest chromatic note name for the readout
+    const midi = Math.round(69 + 12 * Math.log2(freq / 440));
+    const noteName = NOTE_NAMES[((midi % 12) + 12) % 12] + (Math.floor(midi / 12) - 1);
+    const noteCents = Math.round((69 + 12 * Math.log2(freq / 440) - midi) * 100);
+    return { best, noteName, noteCents };
+  }
+
+  // ---------------- Pitch detection (autocorrelation) ----------------
+  let audioCtx = null, analyser = null, micStream = null, rafId = null, running = false;
+  let buf = null;
+
+  function autoCorrelate(buffer, sampleRate) {
+    const SIZE = buffer.length;
+    let rms = 0;
+    for (let i = 0; i < SIZE; i++) rms += buffer[i] * buffer[i];
+    rms = Math.sqrt(rms / SIZE);
+    if (rms < 0.01) return -1; // too quiet
+
+    let r1 = 0, r2 = SIZE - 1, thres = 0.2;
+    for (let i = 0; i < SIZE / 2; i++) { if (Math.abs(buffer[i]) < thres) { r1 = i; break; } }
+    for (let i = 1; i < SIZE / 2; i++) { if (Math.abs(buffer[SIZE - i]) < thres) { r2 = SIZE - i; break; } }
+    const b = buffer.slice(r1, r2);
+    const newSize = b.length;
+
+    const c = new Array(newSize).fill(0);
+    for (let i = 0; i < newSize; i++)
+      for (let j = 0; j < newSize - i; j++)
+        c[i] += b[j] * b[j + i];
+
+    let d = 0; while (d < newSize - 1 && c[d] > c[d + 1]) d++;
+    let maxval = -1, maxpos = -1;
+    for (let i = d; i < newSize; i++) {
+      if (c[i] > maxval) { maxval = c[i]; maxpos = i; }
+    }
+    let T0 = maxpos;
+    if (T0 <= 0) return -1;
+
+    // parabolic interpolation for a better estimate
+    const x1 = c[T0 - 1] || 0, x2 = c[T0], x3 = c[T0 + 1] || 0;
+    const a = (x1 + x3 - 2 * x2) / 2;
+    const bb = (x3 - x1) / 2;
+    if (a) T0 = T0 - bb / (2 * a);
+
+    return sampleRate / T0;
+  }
+
+  // ---------------- Modes ----------------
+  let mode = "free"; // or "lesson"
+  let lessonIndex = 0;         // which swara we're currently on
+  let holdFrames = 0;          // consecutive in-tune frames for lesson advance
+  const HOLD_TARGET = 18;      // ~0.4s of in-tune to "pass" a swara
+  let completed = 0;
+
+  function setMode(m) {
+    mode = m;
+    modeFree.classList.toggle("active", m === "free");
+    modeLesson.classList.toggle("active", m === "lesson");
+    const lesson = m === "lesson";
+    targetRow.style.visibility = lesson ? "visible" : "hidden";
+    scoreBox.style.visibility = lesson ? "visible" : "hidden";
+    hint.innerHTML = lesson
+      ? "Follow along: hold each highlighted swara steady until it locks green, then it moves to the next — <b>Sa Re Ga Ma Pa Dha Ni Sa'</b>."
+      : "In <b>Free play</b>, hold any note — the light turns green the moment your pitch locks onto a true sargam swara.";
+    resetLesson();
+  }
+
+  function resetLesson() {
+    lessonIndex = 0; holdFrames = 0; completed = 0;
+    scoreNum.textContent = "0";
+    chipEls.forEach((c) => c.classList.remove("hit", "active"));
+    if (mode === "lesson") {
+      targetSwara.textContent = SWARAS[0].name + " (" + SWARAS[0].full + ")";
+      chipEls[0].classList.add("active");
+    }
+  }
+
+  modeFree.addEventListener("click", () => setMode("free"));
+  modeLesson.addEventListener("click", () => setMode("lesson"));
+  tonicSel.addEventListener("change", resetLesson);
+
+  // ---------------- Render loop ----------------
+  function setLight(state /* 'green'|'red'|'off' */, swaraName, hz) {
+    light.classList.toggle("on-green", state === "green");
+    light.classList.toggle("on-red", state === "red");
+    lightSwara.firstChild.nodeValue = swaraName;
+    lightHz.textContent = hz;
+  }
+
+  function update() {
+    rafId = requestAnimationFrame(update);
+    if (!analyser) return;
+    analyser.getFloatTimeDomainData(buf);
+    const freq = autoCorrelate(buf, audioCtx.sampleRate);
+    const tol = parseInt(tolSel.value, 10);
+
+    if (freq <= 0 || freq < 60 || freq > 2500) {
+      // silence / no clear pitch
+      setLight("off", "–", "listening…");
+      needle.style.left = "50%";
+      rNote.textContent = "–"; rHz.textContent = "–"; rCents.textContent = "–";
+      chipEls.forEach((c) => c.classList.remove("active"));
+      if (mode === "lesson") { chipEls[lessonIndex].classList.add("active"); holdFrames = 0; }
+      return;
+    }
+
+    const { best, noteName, noteCents } = analyzePitch(freq);
+    rNote.textContent = noteName;
+    rHz.textContent = freq.toFixed(1) + " Hz";
+    rCents.textContent = (noteCents >= 0 ? "+" : "") + noteCents + "¢";
+
+    // needle position on the ±50 cent meter (relative to nearest swara)
+    const clamped = Math.max(-50, Math.min(50, best.cents));
+    needle.style.left = (50 + clamped) + "%";
+
+    if (mode === "free") {
+      const inTune = Math.abs(best.cents) <= tol;
+      setLight(inTune ? "green" : "red", best.swara.name, freq.toFixed(1) + " Hz");
+      chipEls.forEach((c, i) => {
+        c.classList.toggle("active", i === best.swaraIndex);
+        c.classList.toggle("hit", i === best.swaraIndex && inTune);
+      });
+    } else {
+      // lesson mode: must match the TARGET swara (octave-folded)
+      const target = SWARAS[lessonIndex];
+      // recompute cents specifically against the target swara (nearest octave)
+      const saFreq = midiToFreq(parseInt(tonicSel.value, 10));
+      const semisFromSa = 12 * Math.log2(freq / saFreq);
+      let targetCents = Infinity;
+      for (let oct = -2; oct <= 3; oct++) {
+        const ts = target.semi + 12 * oct;
+        const c = (semisFromSa - ts) * 100;
+        if (Math.abs(c) < Math.abs(targetCents)) targetCents = c;
+      }
+      const onTarget = Math.abs(targetCents) <= tol;
+      needle.style.left = (50 + Math.max(-50, Math.min(50, targetCents))) + "%";
+      setLight(onTarget ? "green" : "red", target.name, onTarget ? "hold it…" : "adjust");
+
+      chipEls.forEach((c, i) => c.classList.toggle("active", i === lessonIndex));
+
+      if (onTarget) {
+        holdFrames++;
+        if (holdFrames >= HOLD_TARGET) {
+          chipEls[lessonIndex].classList.add("hit");
+          completed++;
+          scoreNum.textContent = String(completed);
+          holdFrames = 0;
+          lessonIndex++;
+          if (lessonIndex >= SWARAS.length) {
+            statusEl.textContent = "🎉 Shabaash! You played the full sargam Sa→Sa in tune.";
+            lessonIndex = 0;
+            setTimeout(() => {
+              chipEls.forEach((c) => c.classList.remove("hit"));
+              completed = 0; scoreNum.textContent = "0";
+            }, 2500);
+          } else {
+            const nx = SWARAS[lessonIndex];
+            targetSwara.textContent = nx.name + " (" + nx.full + ")";
+          }
+        }
+      } else {
+        holdFrames = 0;
+      }
+    }
+  }
+
+  // ---------------- Start / stop ----------------
+  async function start() {
+    if (running) { stop(); return; }
+    try {
+      statusEl.textContent = "Requesting microphone…";
+      micStream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }
+      });
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === "suspended") await audioCtx.resume();
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 2048;
+      buf = new Float32Array(analyser.fftSize);
+      const src = audioCtx.createMediaStreamSource(micStream);
+      src.connect(analyser);
+
+      running = true;
+      startBtn.textContent = "■ Stop";
+      startBtn.classList.remove("btn-primary");
+      statusEl.textContent = "Listening 🎧 — play your flute!";
+      resetLesson();
+      update();
+    } catch (err) {
+      statusEl.textContent = "⚠️ Could not access microphone: " + (err && err.message ? err.message : err) +
+        ". Check browser mic permissions and reload.";
+    }
+  }
+
+  function stop() {
+    running = false;
+    if (rafId) cancelAnimationFrame(rafId), (rafId = null);
+    if (micStream) micStream.getTracks().forEach((t) => t.stop()), (micStream = null);
+    if (audioCtx) audioCtx.close(), (audioCtx = null);
+    analyser = null;
+    startBtn.textContent = "▶ Start listening";
+    startBtn.classList.add("btn-primary");
+    statusEl.textContent = "Stopped.";
+    setLight("off", "–", "stopped");
+    needle.style.left = "50%";
+  }
+
+  startBtn.addEventListener("click", start);
+  setMode("free");
+})();
+</script>
+</body>
+</html>
