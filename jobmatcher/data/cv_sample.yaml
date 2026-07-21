@@ -1,0 +1,58 @@
+# Placeholder CV. Replace every field with your real details.
+# Keep the structure; the pipeline reads these keys directly.
+name: Jane Doe
+headline: Senior Backend Engineer
+email: jane.doe@example.com
+phone: "+1 555 010 1234"
+location: Remote
+links:
+  github: https://github.com/janedoe
+  linkedin: https://linkedin.com/in/janedoe
+
+summary: >
+  Backend engineer with 8 years building scalable, reliable services.
+  Comfortable owning systems end to end, from API design to production
+  operations.
+
+# Used to bias search queries and matching. Put your real target roles here.
+target_titles:
+  - Senior Backend Engineer
+  - Platform Engineer
+  - Python Engineer
+
+skills:
+  - Python
+  - FastAPI
+  - Django
+  - PostgreSQL
+  - AWS
+  - Kubernetes
+  - Docker
+  - Terraform
+  - CI/CD
+  - REST APIs
+  - gRPC
+  - Airflow
+
+experience:
+  - title: Senior Backend Engineer
+    company: Example Corp
+    dates: 2021–present
+    bullets:
+      - Designed and shipped Python microservices handling 5k req/s on AWS.
+      - Cut deployment time 60% by rebuilding CI/CD on Kubernetes.
+      - Mentored 4 engineers and owned the on-call rotation.
+  - title: Backend Engineer
+    company: Startup Inc
+    dates: 2018–2021
+    bullets:
+      - Built REST APIs in Django/DRF backed by PostgreSQL.
+      - Introduced Terraform, moving infra to reproducible IaC.
+
+education:
+  - degree: B.Sc. Computer Science
+    institution: State University
+    dates: 2014–2018
+
+certifications:
+  - AWS Certified Solutions Architect – Associate

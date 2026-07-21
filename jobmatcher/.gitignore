@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.env
+out/
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+# Your real CV / private data — keep out of git.
+my_cv.yaml
+my_cv.json
+data/h1b_sponsors.csv

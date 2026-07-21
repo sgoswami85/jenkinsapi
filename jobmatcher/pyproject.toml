@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jobmatcher"
+version = "0.1.0"
+description = "Compliant job-match + CV-tailoring pipeline (no scraping, no auto-submit)"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "requests>=2.25",
+    "PyYAML>=5.4",
+]
+
+[project.optional-dependencies]
+llm = ["anthropic>=0.40"]
+dev = ["pytest>=7"]
+
+[project.scripts]
+jobmatcher = "jobmatcher.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["jobmatcher*"]

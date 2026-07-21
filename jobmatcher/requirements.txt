@@ -1,0 +1,6 @@
+# Core is dependency-light. These enable live search and YAML CVs.
+requests>=2.25
+PyYAML>=5.4
+
+# Optional: only needed if you set ANTHROPIC_API_KEY for LLM-assisted tailoring.
+# anthropic>=0.40
