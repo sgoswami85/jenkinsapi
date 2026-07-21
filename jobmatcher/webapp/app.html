@@ -298,9 +298,12 @@
 
 Backend Engineer — Startup Inc (2018–2021)
 - Built REST APIs in Django/DRF on PostgreSQL"></textarea></label>
+      <label class="field"><span>Education (one per line)</span><textarea id="cv-edu" style="min-height:70px" placeholder="M.Sc. Electronics — ISEP, Paris (2012)
+B.E. Electronics & Telecommunication — Mumbai University (2009)"></textarea></label>
+      <label class="field"><span>Certifications (comma-separated)</span><input id="cv-certs" placeholder="ISTQB Certified Tester, ISO 26262 Functional Safety"></label>
       <div class="btn-row">
         <button class="btn" id="saveCv">Save CV</button>
-        <button class="btn ghost small" id="loadSample">Load sample</button>
+        <button class="btn ghost small" id="loadSample">Reload my CV</button>
       </div>
     </div>
   </section>
@@ -486,6 +489,16 @@ function tailoredCvMarkdown(c, j){
     L.push("## Experience");
     c.experience.forEach(e => { L.push(`### ${e.title}`); (e.bullets||[]).forEach(b => L.push(`- ${b}`)); L.push(""); });
   }
+  if ((c.education||[]).length){
+    L.push("## Education");
+    c.education.forEach(e => L.push(`- ${e.title}`));
+    L.push("");
+  }
+  if ((c.certifications||[]).length){
+    L.push("## Certifications");
+    c.certifications.forEach(x => L.push(`- ${x}`));
+    L.push("");
+  }
   return L.join("\n").trim() + "\n";
 }
 function coverLetter(c, j){
@@ -531,6 +544,8 @@ function readCvForm(){
     skills: $("#cv-skills").value.split(",").map(s => s.trim()).filter(Boolean),
     summary: $("#cv-summary").value.trim(),
     experience,
+    education: $("#cv-edu").value.split("\n").map(l => l.trim()).filter(Boolean).map(l => ({ title: l, bullets: [] })),
+    certifications: $("#cv-certs").value.split(",").map(s => s.trim()).filter(Boolean),
   };
 }
 function fillCvForm(c){
@@ -543,6 +558,8 @@ function fillCvForm(c){
   $("#cv-skills").value = (c.skills||[]).join(", ");
   $("#cv-summary").value = c.summary || "";
   $("#cv-exp").value = (c.experience||[]).map(e => [e.title, ...(e.bullets||[]).map(b => "- " + b)].join("\n")).join("\n\n");
+  $("#cv-edu").value = (c.education||[]).map(e => e.title).join("\n");
+  $("#cv-certs").value = (c.certifications||[]).join(", ");
 }
 
 $("#saveCv").addEventListener("click", () => {
@@ -552,19 +569,42 @@ $("#saveCv").addEventListener("click", () => {
   toast("CV saved ✓");
 });
 
-const SAMPLE = {
-  name: "Jane Doe", headline: "Senior Backend Engineer", location: "Remote",
-  email: "jane.doe@example.com", phone: "+1 555 010 1234",
-  links: [["github","https://github.com/janedoe"], ["linkedin","https://linkedin.com/in/janedoe"]],
-  titles: ["Senior Backend Engineer","Platform Engineer","Python Engineer"],
-  skills: ["Python","FastAPI","Django","PostgreSQL","AWS","Kubernetes","Docker","Terraform","CI/CD","REST APIs","gRPC","Airflow"],
-  summary: "Backend engineer with 8 years building scalable, reliable services. Comfortable owning systems end to end, from API design to production operations.",
+const MYCV = {
+  // Contact details intentionally left blank in source — fill them once in the
+  // app on your device (they save locally and are never committed/published).
+  name: "",
+  headline: "Test & Validation Engineer — ADAS/AV · Embedded · ISO 26262 · Python Automation",
+  location: "Open to relocation",
+  email: "", phone: "",
+  links: [],
+  titles: ["Test & Validation Engineer","Senior SDET","Verification Engineer","ADAS/AV Validation Engineer","Functional Safety Test Engineer","Automation Test Engineer"],
+  skills: ["Python","Robot Framework","Bash","CI/CD","Jenkins","Git","Bamboo","Docker","Kubernetes","Linux","HIL","SIL","ISO 26262","Functional Safety","Requirement-based testing","Test planning","Test automation","Vector CANoe","CANalyzer","CAN","Oscilloscopes","SMU","PyTorch","NVIDIA DRIVE Sim","OpenDRIVE","ASAM OpenX","Scenario engineering","Regression pipelines","Agile","Scrum","Jira","Confluence","ISTQB"],
+  summary: "ISTQB-certified test & validation engineer with 14+ years validating complex systems across autonomous-driving, automotive, embedded and semiconductor (EDA) domains — the last four at NVIDIA on autonomous driving. Strong in Python test automation, SIL/HIL validation, ISO 26262 functional safety, and CI/CD (Jenkins, Git, Docker) on Linux. I define test strategy and acceptance criteria, build repeatable test environments and traceability, and drive defect triage and root-cause analysis through to concrete product fixes. Open to relocation.",
   experience: [
-    { title: "Senior Backend Engineer — Example Corp (2021–present)", bullets: ["Designed and shipped Python microservices handling 5k req/s on AWS","Cut deployment time 60% by rebuilding CI/CD on Kubernetes","Mentored 4 engineers and owned the on-call rotation"] },
-    { title: "Backend Engineer — Startup Inc (2018–2021)", bullets: ["Built REST APIs in Django/DRF backed by PostgreSQL","Introduced Terraform, moving infra to reproducible IaC"] },
+    { title: "Senior Software Development Engineer in Test — NVIDIA (Aug 2022 – Present)", bullets: [
+      "Own scenario-based validation for autonomous-driving features: author and document test scenarios, define tagging schemas, and maintain requirement-to-coverage traceability.",
+      "Built SIL and replay-based test pipelines against recorded fleet data, mining edge-case clips that expose perception and planning failure modes — 200+ scenarios automated, 50+ bugs surfaced and tracked to resolution.",
+      "Integrated automated AV test suites into CI/CD (Robot Framework, Python, Docker, Linux), cutting manual regression effort and shortening feedback loops.",
+      "Developed scoring frameworks to prioritise scenarios by novelty, criticality, coverage gap and bug-discovery potential; partnered with simulation and platform teams on setup and result triage."
+    ] },
+    { title: "Principal Product Validation Engineer — Cadence Design Systems (Nov 2017 – Aug 2022)", bullets: [
+      "Led verification, QA and release readiness for DSP validation bundles shipped to external customers.",
+      "Built reproducible, container-based test environments (Docker) and automated regression pipelines, making large validation runs repeatable across machines and releases.",
+      "Defined acceptance criteria and quality gates and drove closed-loop quality improvement so findings resulted in concrete product fixes."
+    ] },
+    { title: "Senior Engineer — John Deere (Nov 2015 – Nov 2017)", bullets: [
+      "Created and executed HIL/SIL test strategies for embedded electronic controllers on real hardware; set up and managed test benches and equipment.",
+      "Executed ISO 26262 functional-safety testing; CAN-bus diagnostics with Vector CANoe/CANalyzer, oscilloscopes and multimeters.",
+      "Integrated test automation with CI workflows and consolidated HIL/SIL results into a single traceable reporting view."
+    ] },
   ],
+  education: [
+    { title: "M.Sc. Electronics & Communication — ISEP, Paris, France (2012)", bullets: [] },
+    { title: "B.E. Electronics & Telecommunication — Mumbai University, India (2009)", bullets: [] },
+  ],
+  certifications: ["ISTQB Certified Tester", "ISO 26262 Functional Safety", "AWS Cloud Practitioner (in progress)"],
 };
-$("#loadSample").addEventListener("click", () => { fillCvForm(SAMPLE); toast("Sample loaded — edit, then Save"); });
+$("#loadSample").addEventListener("click", () => { fillCvForm(MYCV); toast("Your CV reloaded — edit, then Save"); });
 
 // ---------- Add job ----------
 $("#addJob").addEventListener("click", () => {
@@ -695,6 +735,7 @@ async function saveFile(filename, text){
 }
 
 // ---------- Boot ----------
+if (!cv) { cv = MYCV; save(LS_CV, cv); }   // first open: preload the owner's CV
 fillCvForm(cv);
 renderJobs(); renderMatches(); updateCounts();
 </script>
