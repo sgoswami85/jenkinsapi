@@ -1,0 +1,700 @@
+<style>
+  :root {
+    --bg: #f4f6f5;
+    --surface: #ffffff;
+    --surface-2: #eef1f0;
+    --ink: #16211e;
+    --muted: #5c6b66;
+    --line: #e2e7e4;
+    --accent: #0e7c66;
+    --accent-ink: #ffffff;
+    --accent-soft: #d8ece6;
+    --warn: #b4690e;
+    --warn-soft: #f6e7cf;
+    --good: #0e7c66;
+    --r-us: #2f6feb;
+    --r-eu: #7a54d8;
+    --r-sg: #0c8f9c;
+    --r-au: #c07a0a;
+    --shadow: 0 1px 2px rgba(20, 33, 30, .06), 0 6px 20px rgba(20, 33, 30, .06);
+    --radius: 14px;
+    --maxw: 680px;
+    --mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1513;
+      --surface: #161e1b;
+      --surface-2: #1c2622;
+      --ink: #e8eeeb;
+      --muted: #9aaba4;
+      --line: #26302c;
+      --accent: #34d6a8;
+      --accent-ink: #06231b;
+      --accent-soft: #123027;
+      --warn: #e6b25a;
+      --warn-soft: #322411;
+      --good: #34d6a8;
+      --r-us: #6ea0ff;
+      --r-eu: #b39bf2;
+      --r-sg: #4fc9d4;
+      --r-au: #e6b25a;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .35);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #f4f6f5; --surface: #ffffff; --surface-2: #eef1f0; --ink: #16211e;
+    --muted: #5c6b66; --line: #e2e7e4; --accent: #0e7c66; --accent-ink: #fff;
+    --accent-soft: #d8ece6; --warn: #b4690e; --warn-soft: #f6e7cf; --good: #0e7c66;
+    --r-us: #2f6feb; --r-eu: #7a54d8; --r-sg: #0c8f9c; --r-au: #c07a0a;
+    --shadow: 0 1px 2px rgba(20,33,30,.06), 0 6px 20px rgba(20,33,30,.06);
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1513; --surface: #161e1b; --surface-2: #1c2622; --ink: #e8eeeb;
+    --muted: #9aaba4; --line: #26302c; --accent: #34d6a8; --accent-ink: #06231b;
+    --accent-soft: #123027; --warn: #e6b25a; --warn-soft: #322411; --good: #34d6a8;
+    --r-us: #6ea0ff; --r-eu: #b39bf2; --r-sg: #4fc9d4; --r-au: #e6b25a;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); line-height: 1.5;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 16px 120px; }
+
+  header.top {
+    position: sticky; top: 0; z-index: 20;
+    background: color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter: saturate(1.4) blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .top-inner {
+    max-width: var(--maxw); margin: 0 auto; padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; margin-right: auto; }
+  .brand .mark {
+    width: 30px; height: 30px; border-radius: 8px; flex: none;
+    background: var(--accent); color: var(--accent-ink);
+    display: grid; place-items: center; font-size: 17px; font-weight: 700;
+  }
+  .brand h1 {
+    font-size: 16px; margin: 0; letter-spacing: -.02em; font-weight: 650;
+  }
+  .brand .sub {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--muted); margin-top: 1px;
+  }
+  .icon-btn {
+    appearance: none; border: 1px solid var(--line); background: var(--surface);
+    color: var(--ink); width: 38px; height: 38px; border-radius: 10px;
+    font-size: 16px; cursor: pointer; display: grid; place-items: center;
+  }
+  .icon-btn:active { transform: scale(.94); }
+
+  nav.tabs {
+    position: sticky; top: 59px; z-index: 15;
+    display: flex; gap: 4px; padding: 8px 0;
+    background: color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter: blur(10px);
+  }
+  nav.tabs button {
+    flex: 1; appearance: none; border: 1px solid transparent;
+    background: transparent; color: var(--muted);
+    padding: 9px 6px; border-radius: 10px; cursor: pointer;
+    font-family: var(--sans); font-size: 13.5px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  nav.tabs button .count {
+    font-family: var(--mono); font-size: 11px; background: var(--surface-2);
+    color: var(--muted); border-radius: 999px; padding: 1px 7px;
+  }
+  nav.tabs button[aria-selected="true"] {
+    background: var(--surface); color: var(--ink);
+    border-color: var(--line); box-shadow: var(--shadow);
+  }
+  nav.tabs button[aria-selected="true"] .count {
+    background: var(--accent-soft); color: var(--accent);
+  }
+
+  .panel { display: none; padding-top: 8px; }
+  .panel.active { display: block; animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .panel.active { animation: none; }
+    .icon-btn:active { transform: none; }
+  }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 16px; margin: 12px 0;
+  }
+  .card h2 {
+    margin: 0 0 2px; font-size: 15px; letter-spacing: -.01em;
+  }
+  .card .hint { color: var(--muted); font-size: 13px; margin: 0 0 14px; }
+
+  label.field { display: block; margin: 12px 0; }
+  label.field > span {
+    display: block; font-family: var(--mono); font-size: 10.5px;
+    letter-spacing: .07em; text-transform: uppercase; color: var(--muted);
+    margin-bottom: 6px;
+  }
+  input, textarea, select {
+    width: 100%; font-family: var(--sans); font-size: 16px; color: var(--ink);
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 11px 12px; -webkit-appearance: none;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: 2px solid var(--accent); outline-offset: 1px;
+    border-color: transparent; background: var(--surface);
+  }
+  textarea { min-height: 108px; resize: vertical; line-height: 1.45; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 420px) { .row2 { grid-template-columns: 1fr; } }
+
+  .btn {
+    appearance: none; border: none; cursor: pointer; font-family: var(--sans);
+    font-weight: 650; font-size: 15px; border-radius: 11px; padding: 12px 16px;
+    background: var(--accent); color: var(--accent-ink); width: 100%;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn:active { transform: scale(.985); }
+  .btn.ghost {
+    background: var(--surface); color: var(--ink); border: 1px solid var(--line);
+  }
+  .btn.small { width: auto; font-size: 13px; padding: 8px 12px; border-radius: 9px; }
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .04em;
+    text-transform: uppercase; padding: 3px 8px; border-radius: 999px;
+    border: 1px solid var(--line); color: var(--muted); background: var(--surface-2);
+  }
+  .chip .dot { width: 7px; height: 7px; border-radius: 999px; background: currentColor; }
+  .chip.us { color: var(--r-us); border-color: color-mix(in srgb, var(--r-us) 40%, var(--line)); }
+  .chip.eu { color: var(--r-eu); border-color: color-mix(in srgb, var(--r-eu) 40%, var(--line)); }
+  .chip.sg { color: var(--r-sg); border-color: color-mix(in srgb, var(--r-sg) 40%, var(--line)); }
+  .chip.au { color: var(--r-au); border-color: color-mix(in srgb, var(--r-au) 40%, var(--line)); }
+  .chip.good { color: var(--good); background: var(--accent-soft); border-color: transparent; }
+  .chip.warn { color: var(--warn); background: var(--warn-soft); border-color: transparent; }
+
+  .job {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    margin: 12px 0; overflow: hidden;
+  }
+  .job-head { display: flex; gap: 14px; padding: 15px 16px; align-items: flex-start; }
+  .score {
+    --p: 0; flex: none; width: 52px; height: 52px; border-radius: 50%;
+    display: grid; place-items: center; position: relative;
+    background: conic-gradient(var(--accent) calc(var(--p) * 1%), var(--surface-2) 0);
+  }
+  .score::before {
+    content: ""; position: absolute; inset: 4px; border-radius: 50%; background: var(--surface);
+  }
+  .score b {
+    position: relative; font-family: var(--mono); font-size: 16px;
+    font-variant-numeric: tabular-nums; letter-spacing: -.03em;
+  }
+  .job-meta { min-width: 0; flex: 1; }
+  .job-meta .title { font-size: 15px; font-weight: 650; letter-spacing: -.01em; margin: 0; }
+  .job-meta .co { color: var(--muted); font-size: 13.5px; margin: 1px 0 8px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .job-body { display: none; padding: 0 16px 16px; border-top: 1px solid var(--line); margin-top: 2px; }
+  .job.open .job-body { display: block; animation: fade .2s ease; }
+  .job-body h3 {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .07em;
+    text-transform: uppercase; color: var(--muted); margin: 16px 0 8px;
+  }
+  .matched b { color: var(--accent); font-weight: 600; }
+  pre.doc {
+    font-family: var(--mono); font-size: 12px; line-height: 1.55;
+    white-space: pre-wrap; word-break: break-word; background: var(--surface-2);
+    border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin: 0;
+    max-height: 340px; overflow: auto;
+  }
+  .expand-btn {
+    appearance: none; border: none; background: transparent; color: var(--muted);
+    font-family: var(--mono); font-size: 11px; letter-spacing: .05em; cursor: pointer;
+    padding: 8px 16px 14px; width: 100%; text-align: center; text-transform: uppercase;
+  }
+
+  .empty { text-align: center; color: var(--muted); padding: 40px 20px; }
+  .empty .big { font-size: 30px; margin-bottom: 8px; }
+  .empty p { margin: 4px 0; font-size: 14px; }
+
+  .note {
+    display: flex; gap: 10px; font-size: 12.5px; color: var(--muted);
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 11px 12px; margin: 12px 0; line-height: 1.45;
+  }
+  .note .i { flex: none; }
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: var(--bg); font-size: 13px; font-weight: 600;
+    padding: 10px 18px; border-radius: 999px; opacity: 0; pointer-events: none;
+    transition: opacity .2s, transform .2s; z-index: 50; box-shadow: var(--shadow);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .del {
+    appearance: none; border: none; background: transparent; color: var(--muted);
+    font-size: 13px; cursor: pointer; padding: 4px 6px; font-family: var(--mono);
+  }
+  .skills-line { font-size: 13px; color: var(--muted); }
+  footer.foot {
+    text-align: center; color: var(--muted); font-size: 11.5px;
+    padding: 24px 0 8px; font-family: var(--mono); letter-spacing: .03em;
+  }
+</style>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <div class="mark">◎</div>
+      <div>
+        <h1>Relay</h1>
+        <div class="sub">Job match &amp; CV tailor</div>
+      </div>
+    </div>
+    <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">◐</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-tab="cv">My&nbsp;CV</button>
+    <button role="tab" aria-selected="false" data-tab="jobs">Jobs <span class="count" id="jobsCount">0</span></button>
+    <button role="tab" aria-selected="false" data-tab="matches">Matches <span class="count" id="matchCount">0</span></button>
+  </nav>
+
+  <!-- CV -->
+  <section class="panel active" id="panel-cv" role="tabpanel">
+    <div class="card">
+      <h2>Your CV</h2>
+      <p class="hint">Saved on this device only. Fill it once — every match and tailored draft is built from it.</p>
+      <label class="field"><span>Full name</span><input id="cv-name" placeholder="Jane Doe"></label>
+      <div class="row2">
+        <label class="field"><span>Headline</span><input id="cv-headline" placeholder="Senior Backend Engineer"></label>
+        <label class="field"><span>Location</span><input id="cv-location" placeholder="Remote"></label>
+      </div>
+      <div class="row2">
+        <label class="field"><span>Email</span><input id="cv-email" type="email" placeholder="jane@example.com"></label>
+        <label class="field"><span>Phone</span><input id="cv-phone" placeholder="+1 555 010 1234"></label>
+      </div>
+      <label class="field"><span>Links (label: url, comma-separated)</span><input id="cv-links" placeholder="github: https://…, linkedin: https://…"></label>
+      <label class="field"><span>Target titles (comma-separated)</span><input id="cv-titles" placeholder="Senior Backend Engineer, Platform Engineer"></label>
+      <label class="field"><span>Skills (comma-separated)</span><textarea id="cv-skills" placeholder="Python, AWS, Kubernetes, PostgreSQL, Terraform"></textarea></label>
+      <label class="field"><span>Professional summary</span><textarea id="cv-summary" placeholder="Backend engineer with 8 years building scalable services…"></textarea></label>
+      <label class="field"><span>Experience (one role per block; first line = Title — Company (dates), then “- ” bullets)</span><textarea id="cv-exp" style="min-height:160px" placeholder="Senior Backend Engineer — Example Corp (2021–present)
+- Shipped Python microservices at 5k req/s on AWS
+- Cut deploy time 60% via Kubernetes CI/CD
+
+Backend Engineer — Startup Inc (2018–2021)
+- Built REST APIs in Django/DRF on PostgreSQL"></textarea></label>
+      <div class="btn-row">
+        <button class="btn" id="saveCv">Save CV</button>
+        <button class="btn ghost small" id="loadSample">Load sample</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOBS -->
+  <section class="panel" id="panel-jobs" role="tabpanel">
+    <div class="card">
+      <h2>Add a job</h2>
+      <p class="hint">Spotted a role in the LinkedIn or Indeed app? Copy its text and paste it here — the description drives the match.</p>
+      <div class="row2">
+        <label class="field"><span>Job title</span><input id="j-title" placeholder="Senior Python Engineer"></label>
+        <label class="field"><span>Company</span><input id="j-company" placeholder="Acme Cloud"></label>
+      </div>
+      <div class="row2">
+        <label class="field"><span>Market</span>
+          <select id="j-region">
+            <option value="us_h1b">US · needs H1B sponsorship</option>
+            <option value="europe_english">Europe · English-speaking</option>
+            <option value="singapore">Singapore</option>
+            <option value="australia">Australia</option>
+          </select>
+        </label>
+        <label class="field"><span>Location</span><input id="j-location" placeholder="Austin, TX"></label>
+      </div>
+      <label class="field"><span>Apply link (optional)</span><input id="j-url" placeholder="https://…"></label>
+      <label class="field"><span>Job description (paste the full text)</span><textarea id="j-desc" style="min-height:150px" placeholder="Paste the responsibilities, requirements, tech stack…"></textarea></label>
+      <button class="btn" id="addJob">Add job &amp; match</button>
+    </div>
+    <div id="jobsList"></div>
+  </section>
+
+  <!-- MATCHES -->
+  <section class="panel" id="panel-matches" role="tabpanel">
+    <div class="note">
+      <span class="i">↕</span>
+      <span>Ranked by how well each job fits your CV. Tap a card to see the tailored CV and cover letter, then copy or save them and apply in the employer's own portal — nothing is sent for you.</span>
+    </div>
+    <div id="matchList"></div>
+  </section>
+
+  <footer class="foot">On-device · no scraping · no auto-submit</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+// ---------- Storage ----------
+const LS_CV = "relay.cv.v1", LS_JOBS = "relay.jobs.v1", LS_THEME = "relay.theme.v1";
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+
+let cv = load(LS_CV, null);
+let jobs = load(LS_JOBS, []);
+
+function load(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } }
+function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+
+// ---------- Theme ----------
+(function initTheme(){
+  const saved = load(LS_THEME, null);
+  if (saved) document.documentElement.setAttribute("data-theme", saved);
+})();
+$("#themeBtn").addEventListener("click", () => {
+  const cur = document.documentElement.getAttribute("data-theme");
+  const isDark = cur ? cur === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  const next = isDark ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  save(LS_THEME, next);
+});
+
+// ---------- Tabs ----------
+$$('nav.tabs button').forEach(btn => btn.addEventListener("click", () => selectTab(btn.dataset.tab)));
+function selectTab(name){
+  $$('nav.tabs button').forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === name)));
+  $$('.panel').forEach(p => p.classList.toggle("active", p.id === "panel-" + name));
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ---------- Toast ----------
+let toastT;
+function toast(msg){
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 1900);
+}
+
+// ---------- Matching engine (mirrors the Python TF-IDF/cosine scorer) ----------
+const WORD_RE = /[A-Za-z][A-Za-z0-9+#.\-]{1,}/g;
+const STOP = new Set(("the and for with you our are will have this that your from who all can was has "
+  + "job role team work working years year experience a an to in of on we is as at be or").split(" "));
+const tokenize = t => (t ? (t.match(WORD_RE) || []).map(w => w.toLowerCase()) : []);
+const terms = t => tokenize(t).filter(w => w.length > 1 && !STOP.has(w));
+
+function tf(toks){ const c = {}; toks.forEach(t => c[t] = (c[t]||0)+1); const n = toks.length||1;
+  const o = {}; for (const k in c) o[k] = c[k]/n; return o; }
+function idf(docs){ const n = docs.length||1, df = {};
+  docs.forEach(d => new Set(d).forEach(t => df[t] = (df[t]||0)+1));
+  const o = {}; for (const t in df) o[t] = Math.log((1+n)/(1+df[t])) + 1; return o; }
+function vec(toks, I){ const f = tf(toks), o = {}; for (const t in f) o[t] = f[t]*(I[t]||0); return o; }
+function cosine(a, b){ let dot=0, na=0, nb=0;
+  for (const t in a){ na += a[t]*a[t]; if (b[t]) dot += a[t]*b[t]; }
+  for (const t in b) nb += b[t]*b[t];
+  return (na && nb) ? dot/(Math.sqrt(na)*Math.sqrt(nb)) : 0; }
+
+function cvSearchText(c){
+  if (!c) return "";
+  const p = [c.headline, c.summary, ...(c.skills||[]), ...(c.titles||[])];
+  (c.experience||[]).forEach(e => { p.push(e.title); (e.bullets||[]).forEach(b => p.push(b)); });
+  return p.filter(Boolean).join("\n");
+}
+
+function scoreAll(){
+  if (!cv) return [];
+  const cvTok = terms(cvSearchText(cv));
+  const jobTok = jobs.map(j => terms(j.title + "\n" + j.title + "\n" + j.description));
+  const I = idf([cvTok, ...jobTok]);
+  const cvVec = vec(cvTok, I), cvSet = new Set(cvTok);
+  return jobs.map((j, i) => {
+    const jv = vec(jobTok[i], I);
+    const score = cosine(cvVec, jv);
+    const overlap = [...new Set(jobTok[i])].filter(t => cvSet.has(t));
+    overlap.sort((a,b) => (I[b]||0) - (I[a]||0));
+    return { job: j, score, matched: overlap.slice(0, 10) };
+  }).sort((a,b) => b.score - a.score);
+}
+
+// ---------- English-Europe heuristic ----------
+const NON_EN = ["muttersprache","fließend deutsch","niederländisch","nederlands","deutschkenntnisse","langue française","sprachkenntnisse"];
+const EN_SIG = ["english","relocation","visa","sponsor"];
+function looksEnglish(j){
+  const t = (j.title + "\n" + j.description).toLowerCase();
+  if (NON_EN.some(s => t.includes(s))) return false;
+  return EN_SIG.some(s => t.includes(s));
+}
+
+// ---------- Known H1B sponsors (starter list; name-match only — verify in DOL data) ----------
+const H1B = new Set(["google","alphabet","amazon","microsoft","meta","facebook","apple","netflix","nvidia",
+  "oracle","salesforce","adobe","intel","ibm","cisco","qualcomm","uber","lyft","airbnb","stripe","block",
+  "paypal","linkedin","bloomberg","goldman sachs","jpmorgan","morgan stanley","capital one","deloitte",
+  "accenture","cognizant","infosys","tata consultancy","wipro","tesla","snap","pinterest","databricks",
+  "snowflake","palantir","twilio","atlassian","servicenow","workday","vmware","dell","hp","walmart",
+  "acme cloud","northwind analytics","example corp"]);
+const SUFFIX = new Set(["inc","llc","ltd","corp","corporation","co","company","plc","gmbh","pte","pty","limited","incorporated","lp","llp"]);
+function normCo(name){
+  if (!name) return "";
+  return name.toLowerCase().replace(/[^a-z0-9 ]+/g," ").split(/\s+/).filter(w => w && !SUFFIX.has(w)).join(" ");
+}
+function sponsorsH1B(company){
+  const n = normCo(company); if (!n) return false;
+  if (H1B.has(n)) return true;
+  for (const k of H1B){ if ((n.includes(k) || k.includes(n)) && Math.min(n.length,k.length) >= 4) return true; }
+  return false;
+}
+
+// ---------- Tailoring (mirrors the Python tailor/cover-letter logic) ----------
+function jobTerms(j){ return new Set(tokenize(j.title + " " + j.description)); }
+function reorderSkills(c, j){
+  const jt = jobTerms(j), matched = [], rest = [];
+  (c.skills||[]).forEach(s => { const st = new Set(tokenize(s));
+    (([...st].some(x => jt.has(x))) ? matched : rest).push(s); });
+  return { matched, all: matched.concat(rest) };
+}
+function tailoredCvMarkdown(c, j){
+  const { matched, all } = reorderSkills(c, j);
+  const base = c.headline || (c.titles && c.titles[0]) || "";
+  const headline = base ? `${base} — targeting ${j.title} @ ${j.company}` : `Applicant for ${j.title} @ ${j.company}`;
+  let summary = c.summary || "";
+  if (matched.length){
+    const focus = `Relevant to the ${j.title} role at ${j.company}: hands-on experience with ${matched.slice(0,6).join(", ")}.`;
+    summary = summary ? summary + "\n\n" + focus : focus;
+  }
+  const L = [];
+  L.push(`# ${c.name || ""}`);
+  L.push(`**${headline}**`);
+  const contact = [c.email, c.phone, c.location].filter(Boolean);
+  (c.links||[]).forEach(([k,v]) => contact.push(`${k}: ${v}`));
+  if (contact.length) L.push(contact.join(" · "));
+  L.push("");
+  if (summary){ L.push("## Summary", summary, ""); }
+  if (all.length){ L.push("## Skills", all.join(", "), ""); }
+  if ((c.experience||[]).length){
+    L.push("## Experience");
+    c.experience.forEach(e => { L.push(`### ${e.title}`); (e.bullets||[]).forEach(b => L.push(`- ${b}`)); L.push(""); });
+  }
+  return L.join("\n").trim() + "\n";
+}
+function coverLetter(c, j){
+  const { matched } = reorderSkills(c, j);
+  const skillsLine = matched.length ? `my experience with ${matched.slice(0,5).join(", ")}` : "my background";
+  const loc = j.location || regionLabel(j.region);
+  const opener = (c.summary ? c.summary.split("\n")[0] : (c.headline ? `I am a ${c.headline}.` : "I bring a track record of delivering reliable software."));
+  return [
+    `Dear Hiring Team at ${j.company},`, "",
+    `I am writing to apply for the ${j.title} position (${loc}). Having reviewed the role, I believe ${skillsLine} aligns well with what your team is looking for.`, "",
+    opener, "",
+    `I would welcome the opportunity to discuss how I can contribute to ${j.company}. Thank you for your consideration.`, "",
+    "Sincerely,", c.name || ""
+  ].join("\n");
+}
+
+// ---------- Region helpers ----------
+const REGION = {
+  us_h1b:        { label: "US · H1B", cls: "us" },
+  europe_english:{ label: "Europe · EN", cls: "eu" },
+  singapore:     { label: "Singapore", cls: "sg" },
+  australia:     { label: "Australia", cls: "au" },
+};
+const regionLabel = r => (REGION[r] || {label:r}).label;
+
+// ---------- Parse CV form ----------
+function readCvForm(){
+  const links = $("#cv-links").value.split(",").map(s => s.trim()).filter(Boolean)
+    .map(p => { const i = p.indexOf(":"); return i > 0 ? [p.slice(0,i).trim(), p.slice(i+1).trim()] : [p, ""]; });
+  const experience = $("#cv-exp").value.split(/\n\s*\n/).map(block => {
+    const lines = block.split("\n").map(l => l.trim()).filter(Boolean);
+    if (!lines.length) return null;
+    return { title: lines[0].replace(/^-+\s*/, ""), bullets: lines.slice(1).map(l => l.replace(/^-+\s*/, "")) };
+  }).filter(Boolean);
+  return {
+    name: $("#cv-name").value.trim(),
+    headline: $("#cv-headline").value.trim(),
+    location: $("#cv-location").value.trim(),
+    email: $("#cv-email").value.trim(),
+    phone: $("#cv-phone").value.trim(),
+    links,
+    titles: $("#cv-titles").value.split(",").map(s => s.trim()).filter(Boolean),
+    skills: $("#cv-skills").value.split(",").map(s => s.trim()).filter(Boolean),
+    summary: $("#cv-summary").value.trim(),
+    experience,
+  };
+}
+function fillCvForm(c){
+  if (!c) return;
+  $("#cv-name").value = c.name || ""; $("#cv-headline").value = c.headline || "";
+  $("#cv-location").value = c.location || ""; $("#cv-email").value = c.email || "";
+  $("#cv-phone").value = c.phone || "";
+  $("#cv-links").value = (c.links||[]).map(([k,v]) => `${k}: ${v}`).join(", ");
+  $("#cv-titles").value = (c.titles||[]).join(", ");
+  $("#cv-skills").value = (c.skills||[]).join(", ");
+  $("#cv-summary").value = c.summary || "";
+  $("#cv-exp").value = (c.experience||[]).map(e => [e.title, ...(e.bullets||[]).map(b => "- " + b)].join("\n")).join("\n\n");
+}
+
+$("#saveCv").addEventListener("click", () => {
+  cv = readCvForm();
+  if (!cv.name && !cv.skills.length){ toast("Add at least your name and some skills"); return; }
+  save(LS_CV, cv); renderMatches(); updateCounts();
+  toast("CV saved ✓");
+});
+
+const SAMPLE = {
+  name: "Jane Doe", headline: "Senior Backend Engineer", location: "Remote",
+  email: "jane.doe@example.com", phone: "+1 555 010 1234",
+  links: [["github","https://github.com/janedoe"], ["linkedin","https://linkedin.com/in/janedoe"]],
+  titles: ["Senior Backend Engineer","Platform Engineer","Python Engineer"],
+  skills: ["Python","FastAPI","Django","PostgreSQL","AWS","Kubernetes","Docker","Terraform","CI/CD","REST APIs","gRPC","Airflow"],
+  summary: "Backend engineer with 8 years building scalable, reliable services. Comfortable owning systems end to end, from API design to production operations.",
+  experience: [
+    { title: "Senior Backend Engineer — Example Corp (2021–present)", bullets: ["Designed and shipped Python microservices handling 5k req/s on AWS","Cut deployment time 60% by rebuilding CI/CD on Kubernetes","Mentored 4 engineers and owned the on-call rotation"] },
+    { title: "Backend Engineer — Startup Inc (2018–2021)", bullets: ["Built REST APIs in Django/DRF backed by PostgreSQL","Introduced Terraform, moving infra to reproducible IaC"] },
+  ],
+};
+$("#loadSample").addEventListener("click", () => { fillCvForm(SAMPLE); toast("Sample loaded — edit, then Save"); });
+
+// ---------- Add job ----------
+$("#addJob").addEventListener("click", () => {
+  const j = {
+    id: "j" + Date.now(),
+    title: $("#j-title").value.trim(),
+    company: $("#j-company").value.trim(),
+    region: $("#j-region").value,
+    location: $("#j-location").value.trim(),
+    url: $("#j-url").value.trim(),
+    description: $("#j-desc").value.trim(),
+  };
+  if (!j.title || !j.description){ toast("Need at least a title and a description"); return; }
+  jobs.push(j); save(LS_JOBS, jobs);
+  ["#j-title","#j-company","#j-location","#j-url","#j-desc"].forEach(s => $(s).value = "");
+  renderJobs(); renderMatches(); updateCounts();
+  toast(cv ? "Job added — see Matches" : "Job added — add your CV to match");
+  if (cv) selectTab("matches");
+});
+
+function deleteJob(id){
+  jobs = jobs.filter(j => j.id !== id); save(LS_JOBS, jobs);
+  renderJobs(); renderMatches(); updateCounts();
+}
+
+// ---------- Render ----------
+function updateCounts(){ $("#jobsCount").textContent = jobs.length; $("#matchCount").textContent = cv ? jobs.length : 0; }
+
+function regionChip(r){ const m = REGION[r] || {label:r, cls:""}; return `<span class="chip ${m.cls}"><span class="dot"></span>${m.label}</span>`; }
+
+function renderJobs(){
+  const el = $("#jobsList");
+  if (!jobs.length){ el.innerHTML = `<div class="empty"><div class="big">🧳</div><p>No jobs yet.</p><p>Paste one above to get started.</p></div>`; return; }
+  el.innerHTML = jobs.map(j => `
+    <div class="card" style="padding:14px 16px">
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <div style="flex:1;min-width:0">
+          <div class="title" style="font-weight:650">${esc(j.title)}</div>
+          <div class="co" style="color:var(--muted);font-size:13.5px;margin:1px 0 8px">${esc(j.company || "—")}${j.location ? " · " + esc(j.location) : ""}</div>
+          <div class="tags">${regionChip(j.region)}</div>
+        </div>
+        <button class="del" data-del="${j.id}">Remove</button>
+      </div>
+    </div>`).join("");
+  $$("[data-del]", el).forEach(b => b.addEventListener("click", () => deleteJob(b.dataset.del)));
+}
+
+function renderMatches(){
+  const el = $("#matchList");
+  if (!cv){ el.innerHTML = `<div class="empty"><div class="big">📄</div><p>Add your CV first.</p><p>Matches are scored against it.</p></div>`; updateCounts(); return; }
+  if (!jobs.length){ el.innerHTML = `<div class="empty"><div class="big">🧭</div><p>No jobs to match yet.</p><p>Add jobs on the Jobs tab.</p></div>`; return; }
+
+  const ranked = scoreAll();
+  el.innerHTML = ranked.map(({job, score, matched}) => {
+    const pct = Math.round(score * 100);
+    let flags = regionChip(job.region);
+    if (job.region === "us_h1b"){
+      flags += sponsorsH1B(job.company)
+        ? `<span class="chip good"><span class="dot"></span>H1B sponsor ✓</span>`
+        : `<span class="chip warn"><span class="dot"></span>H1B unverified</span>`;
+    }
+    if (job.region === "europe_english" && job.description && !looksEnglish(job)){
+      flags += `<span class="chip warn"><span class="dot"></span>check language</span>`;
+    }
+    const matchedHtml = matched.length ? `<div class="matched skills-line">${matched.map(m => `<b>${esc(m)}</b>`).join(" · ")}</div>` : "";
+    return `
+    <div class="job" data-id="${job.id}">
+      <div class="job-head" data-toggle="${job.id}">
+        <div class="score" style="--p:${pct}"><b>${pct}</b></div>
+        <div class="job-meta">
+          <p class="title">${esc(job.title)}</p>
+          <p class="co">${esc(job.company || "—")}${job.location ? " · " + esc(job.location) : ""}</p>
+          <div class="tags">${flags}</div>
+        </div>
+      </div>
+      <button class="expand-btn" data-toggle="${job.id}">Tap for tailored CV &amp; cover letter ▾</button>
+      <div class="job-body">
+        ${matchedHtml ? `<h3>Matched terms</h3>${matchedHtml}` : ""}
+        ${job.url ? `<h3>Apply link</h3><a href="${esc(job.url)}" target="_blank" rel="noopener" style="color:var(--accent);word-break:break-all;font-size:13px">${esc(job.url)}</a>` : ""}
+        <h3>Tailored CV</h3>
+        <pre class="doc" id="cvdoc-${job.id}">${esc(tailoredCvMarkdown(cv, job))}</pre>
+        <div class="btn-row" style="margin-top:8px">
+          <button class="btn ghost small" data-copy="cvdoc-${job.id}">Copy CV</button>
+          <button class="btn ghost small" data-save="cv" data-jid="${job.id}">Save .md</button>
+        </div>
+        <h3>Cover letter</h3>
+        <pre class="doc" id="cldoc-${job.id}">${esc(coverLetter(cv, job))}</pre>
+        <div class="btn-row" style="margin-top:8px">
+          <button class="btn ghost small" data-copy="cldoc-${job.id}">Copy letter</button>
+          <button class="btn ghost small" data-save="cl" data-jid="${job.id}">Save .txt</button>
+        </div>
+        <div class="note" style="margin-top:14px"><span class="i">✋</span><span>Review everything, then apply in the employer's own portal. This app never submits for you, and answer any sponsorship / work-authorization questions truthfully.</span></div>
+      </div>
+    </div>`;
+  }).join("");
+
+  $$("[data-toggle]", el).forEach(b => b.addEventListener("click", () => {
+    const card = el.querySelector(`.job[data-id="${b.dataset.toggle}"]`);
+    if (card) card.classList.toggle("open");
+  }));
+  $$("[data-copy]", el).forEach(b => b.addEventListener("click", () => copyText($("#" + b.dataset.copy).textContent)));
+  $$("[data-save]", el).forEach(b => b.addEventListener("click", () => {
+    const job = jobs.find(j => j.id === b.dataset.jid); if (!job) return;
+    const isCv = b.dataset.save === "cv";
+    const text = isCv ? tailoredCvMarkdown(cv, job) : coverLetter(cv, job);
+    const base = (cv.name || "cv").replace(/[^a-z0-9]+/gi, "-").toLowerCase();
+    const co = (job.company || "job").replace(/[^a-z0-9]+/gi, "-").toLowerCase();
+    saveFile(`${base}-${co}${isCv ? ".md" : "-cover.txt"}`, text);
+  }));
+}
+
+function esc(s){ return String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;" }[c])); }
+
+async function copyText(text){
+  try { await navigator.clipboard.writeText(text); toast("Copied ✓"); }
+  catch { toast("Press-and-hold the text to copy"); }
+}
+
+async function saveFile(filename, text){
+  const dl = window.claude && window.claude.downloads;
+  if (!dl){ copyText(text); toast("Saving unavailable — copied instead"); return; }
+  try { await dl.save({ filename, data: text }); toast("Saved ✓"); }
+  catch (e){
+    const code = e && e.code;
+    if (code === "declined") return;
+    copyText(text); toast("Couldn't save — copied instead");
+  }
+}
+
+// ---------- Boot ----------
+fillCvForm(cv);
+renderJobs(); renderMatches(); updateCounts();
+</script>
